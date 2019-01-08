@@ -12,3 +12,13 @@ int Car::tankUp() {
     return cost;
 }
 
+double Car::NeedToTankUp(int dist) {
+    double tempFuel = this->fuelLeft - dist*this->fuelEconomy;
+    if(tempFuel<=0){
+        this->fuelLeft = (this->fuelTankCapacity + tempFuel);
+        return (this->fuelLeft * 5);
+    }
+    return 0;
+}
+
+// returnuje koszt tankowania

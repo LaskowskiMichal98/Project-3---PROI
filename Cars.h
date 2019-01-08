@@ -6,40 +6,47 @@
 #ifndef DELIVERY_COMPANY_CARS_H
 #define DELIVERY_COMPANY_CARS_H
 
-#include "Base.h"
-#include "Packages.h"
+
 #include <vector>
+#include <string>
 using namespace std;
+
+class Base;
 
 class Car {
 private:
-    vector<Package> Load;
+    string Type;
     Base* owner;
     int storage;
     int maximumLoad;
-    int fuelTankCapacity;
+    double fuelTankCapacity;
     double fuelEconomy;
-    int fuelLeft;
+    double fuelLeft;
 public:
-    Car(int type,Base* own){
+    Car(Base* own, string type){
         this->owner=own;
-        if(type==1){
-            this->maximumLoad=24000;
-            this->fuelTankCapacity=1300;
-            this->fuelLeft=this->fuelTankCapacity;
-            this->storage=70;
-            this->fuelEconomy = 1/2;
+        if (type == "Bus") {
+                this->Type=type;
+                this->maximumLoad = 1500;
+                this->fuelTankCapacity = 80;
+                this->storage = 5;
+                this->fuelEconomy = 3/25;
+                this->fuelLeft = this->fuelTankCapacity;
         }
-        else if(type==2){
-            this->maximumLoad=1500;
-            this->fuelTankCapacity=80;
-            this->fuelLeft=this->fuelTankCapacity;
-            this->storage=5;
-            this->fuelEconomy = 3/25;
+        else if(type == "TIR"){
+                this->Type=type;
+                this->maximumLoad = 24000;
+                this->fuelTankCapacity = 1300;
+                this->storage = 70;
+                this->fuelEconomy = 1/2;
+                this->fuelLeft = this->fuelTankCapacity;
         }
-    }
+        }
+
     int tankUp();
+    double NeedToTankUp(int);
 };
+
 
 
 

@@ -9,6 +9,7 @@ using namespace std;
 
 int randomNumber(int, int);
 class Base;
+class MainBase;
 
 class Client{
 private:
@@ -25,22 +26,40 @@ public:
     string getClientName(){
         return this->clientName;
     }
+    int getDistance(){
+        return this->distance;
+    }
 
 };
 
 class Package {
 private:
+    Base* Location;
+    int price;
     int numOfPackage;
     int size;
     int weight;
-    Client *destination;
+    string sender;
+    string receiver;
 public:
-    Package(int num, Client *delivery) {
+    Package(int num) {
         this->numOfPackage = num;
-        this->destination = delivery;
-        size = randomNumber(1, 10);
+        size = randomNumber(1, 6);
         this->weight = this->size * 100;
+        this->price=this->size*10;
     }
+    void setSender(string sender){
+        this->sender=sender;
+    }
+    void setReceiver(string receiver){
+        this->receiver=receiver;
+    }
+    void setLocation(Base* location){
+        this->Location=location;
+    }
+
+    void CollectPackage(MainBase*);
+    void checkPackageDestination(MainBase*);
 };
 
 
