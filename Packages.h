@@ -35,31 +35,57 @@ public:
 class Package {
 private:
     Base* Location;
+    Base* Direction;
     int price;
     int numOfPackage;
     int size;
     int weight;
-    string sender;
-    string receiver;
+    Client* sender;
+    Client* receiver;
 public:
     Package(int num) {
         this->numOfPackage = num;
-        size = randomNumber(1, 6);
-        this->weight = this->size * 100;
+        size = randomNumber(1, 10);
+        this->weight = this->size * 500;
         this->price=this->size*10;
     }
-    void setSender(string sender){
+    void setSender(Client* sender){
         this->sender=sender;
     }
-    void setReceiver(string receiver){
+    void setReceiver(Client* receiver){
         this->receiver=receiver;
     }
     void setLocation(Base* location){
         this->Location=location;
     }
+    void setNumOfPackage(int num){
+        this->numOfPackage = num;
+    }
+    void setDestination(Base* destination){
+        this->Direction = destination;
+    }
+    Client* getReceiver(){
+        return this->receiver;
+    }
+    int getNumOfPackage(){
+        return this->numOfPackage;
+    }
+    Base* getLocation(){
+        return this->Location;
+    }
+    Base* getDirection(){
+        return this->Direction;
+    }
+    int getSize(){
+        return this->size;
+    }
+    int getWeight(){
+        return this->weight;
+    }
 
     void CollectPackage(MainBase*);
     void checkPackageDestination(MainBase*);
+    void DeliverPackage();
 };
 
 

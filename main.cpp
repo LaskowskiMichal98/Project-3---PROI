@@ -9,10 +9,16 @@ int main() {
     cin >> repeats;
     int repeatsDone = 0;
 
-    MainBase* Center = CreateChain();
+    MainBase *Center = CreateChain();
 
-    while(repeatsDone!=repeats){
+    while (repeatsDone != repeats) {
         repeatsDone++;
-        Center->CreateNewPackage(repeatsDone);
+        TakeCareOfPackage(Center, repeatsDone, repeats);
     }
+
+    while(!Center->getPackages().empty()){
+        Center->getPackages()[0]->getDirection()->SendTruckToCenter();
+    }
+
+    
 }

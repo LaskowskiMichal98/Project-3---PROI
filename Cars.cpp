@@ -21,4 +21,4 @@ double Car::NeedToTankUp(int dist) {
     return 0;
 }
 
-// returnuje koszt tankowania
+
