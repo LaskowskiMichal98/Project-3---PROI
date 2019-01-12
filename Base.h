@@ -19,10 +19,18 @@ private:
     string City;
     vector<Base*> SubBases;
     vector<Package*> Packages;
+    int PackagesCollected;
+    int PackagesDelivered;
 public:
-    MainBase(string name = "Kutno", int startBudget = 0){
+    MainBase(string name = "Lodz", int startBudget = 0){
+        vector<Base*>* tempBases = new vector<Base*>;
+        this->SubBases=*tempBases;
+        vector<Package*>* tempPackages = new vector<Package*>;
+        this->Packages = *tempPackages;
         this->City = name;
         this->budget= startBudget;
+        this->PackagesCollected = 0;
+        this->PackagesDelivered = 0;
     }
     vector<Base*> getSubBases(){
         return this->SubBases;
@@ -39,14 +47,27 @@ public:
     void AddPackages(Package* package){
         this->Packages.push_back(package);
     }
-
-    bool checkBunkruptcy(){
-        if(this->budget<0){
-            return true;
-        }
-        return false;
+    void PopPackage(){
+        this->Packages.pop_back();
     }
-
+    void ClearPackages(){
+        this->Packages.clear();
+    }
+    void erasePackage(int temp){
+        this->Packages.erase(this->Packages.begin() + temp);
+    }
+    void AddPackageCollected(){
+        this->PackagesCollected++;
+    }
+    void AddPackagesDelivered(){
+        this->PackagesDelivered++;
+    }
+    int getPackagesDelivered(){
+        return this->PackagesDelivered;
+    }
+    int getPackagesCollected(){
+        return this->PackagesCollected;
+    }
     void AddNewBase(string,int);
     Package* CreateNewPackage(int);
 };
@@ -65,6 +86,12 @@ public:
     Base(string name,int dist,MainBase* dest) :MainBase(name){
         this->Center = dest;
         this->DistanceToBase = dist;
+        vector<Car*>* tempBus = new vector<Car*>;
+        this->Bus = *tempBus;
+        vector <Car*>* tempTIR = new vector<Car*>;
+        this->Truck = *tempTIR;
+        vector <Client*>* tempClients = new vector<Client*>;
+        this->Clients = *tempClients;
     }
     vector<Client*> getClients(){
         return this->Clients;
@@ -90,7 +117,7 @@ public:
 };
 
 MainBase* CreateChain();
-void TakeCareOfPackage(MainBase*,int,int);
+void TakeCareOfPackage(MainBase*,int);
 
 
 #endif //DELIVERY_COMPANY_BASE_H

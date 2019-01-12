@@ -29,7 +29,9 @@ private:
 public:
     Car(Base* own, string type){
         this->owner=own;
+        vector<Package*>* tempLoadingSpace = new vector<Package*>;
         if (type == "Bus") {
+                this->LoadingSpace = *tempLoadingSpace;
                 this->Type=type;
                 this->maximumLoad = 2000;
                 this->fuelTankCapacity = 80;
@@ -38,6 +40,7 @@ public:
                 this->fuelLeft = this->fuelTankCapacity;
         }
         else if(type == "TIR"){
+                this->LoadingSpace = *tempLoadingSpace;
                 this->Type=type;
                 this->maximumLoad = 24000;
                 this->fuelTankCapacity = 1300;
@@ -52,6 +55,9 @@ public:
     vector<Package*> getLoadingSpace(){
             return this->LoadingSpace;
     }
+    void setFuelLeft(double fuel){
+        this->fuelLeft = fuel;
+    }
     void setStorageATM(int temp){
             this->storageATM=temp;
     }
@@ -64,8 +70,19 @@ public:
     int getStorageATM(){
             return this->storageATM;
     }
+    string getType(){
+            return this->Type;
+    }
+    Base* getOwner(){
+            return this->owner;
+    }
+    void AddLoadingSpace(Package* package){
+        this->LoadingSpace.push_back(package);
+    }
+    void PopLoadingSpace(){
+        this->LoadingSpace.pop_back();
+    }
 
-    int tankUp();
     double NeedToTankUp(int);
     void placePackageInTruck(Package*);
 };

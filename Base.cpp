@@ -1,8 +1,8 @@
 //
 // Created by Michał Laskowski on 06/01/2019.
 //
-//@TODO sprawdzanie bankrupctwa przy uzyciu wyjatkow
 //@TODO wszystkie couty tez do pliku
+
 #include "Base.h"
 
 MainBase* CreateChain(){
@@ -57,7 +57,7 @@ Package* MainBase::CreateNewPackage(int num) {
     int branch1 = randomNumber(0,branches);
     int branch2 = randomNumber(0,branches);
     int senders = this->getSubBases()[branch1]->getClients().size();
-    int receivers= this->getSubBases()[branch1]->getClients().size();
+    int receivers= this->getSubBases()[branch2]->getClients().size();
     int senderNum;
     int receiverNum;
 
@@ -69,12 +69,13 @@ Package* MainBase::CreateNewPackage(int num) {
     Client* sender = this->getSubBases()[branch1]->getClients()[senderNum];
     Client* receiver = this->getSubBases()[branch2]->getClients()[receiverNum];
     Package* newPackage = new Package(num);
+    this->AddPackageCollected();
     newPackage->setSender(sender);
     newPackage->setReceiver(receiver);
-    newPackage->setNumOfPackage(num);
+    newPackage->setDirection(this->getSubBases()[branch2]);
 
-    cout << "Paczka numer " << num << " w kierunku " << this->getSubBases()[branch2]->getClients()[receiverNum]->getClientName() <<
-    " oczekuje w firmie " << this->getSubBases()[branch1]->getClients()[senderNum]->getClientName() << "." << endl;
+//    cout << "Paczka numer " << num << " w kierunku " << this->getSubBases()[branch2]->getClients()[receiverNum]->getClientName() <<
+//    " oczekuje w firmie " << this->getSubBases()[branch1]->getClients()[senderNum]->getClientName() << "." << endl;
 
     return newPackage;
 }
@@ -106,7 +107,7 @@ void Package::CollectPackage(MainBase * Center) {
         Center->SetBudget(Center->getSubBases()[tempBase]->getBus()[0]->NeedToTankUp(Center->getSubBases()[tempBase]->getClients()[tempSender]->getDistance()));
     }
     this->setLocation(Center->getSubBases()[tempBase]);
-    Center->getSubBases()[tempSender]->getPackages().push_back(this);
+    Center->getSubBases()[tempBase]->AddPackages(this);
 }
 
 void Package::checkPackageDestination(MainBase* Center){
@@ -120,71 +121,79 @@ void Package::checkPackageDestination(MainBase* Center){
     }
 
     if(this->Location == BaseDest){
-        this->DeliverPackage();
+        this->DeliverPackage(0);
     }
 
     else
         this->getLocation()->getTruck()[0]->placePackageInTruck(this);
 }
 
-void Package::DeliverPackage() {
+void Package::DeliverPackage(int temp) {
     for (int i = 0; i < 2; ++i) {
         this->Location->getBus()[0]->NeedToTankUp(this->getReceiver()->getDistance());
     }
-    this->Location->getPackages().clear();
+    this->Location->ClearPackages();
+    //cout << "Paczka numer " << this->getNumOfPackage() << " zostala dostarczona do firmy " << this->receiver->getClientName() << endl;
+    this->getLocation()->getCenter()->AddPackagesDelivered();
 
-    cout << "Paczka numer " << this->getNumOfPackage() << " zostala dostarczona do firmy " << this->receiver->getClientName() << endl;
 }
 
 void Car::placePackageInTruck(Package* package) {
     this->LoadingSpace.push_back(package);
-    package->getLocation()->getPackages().pop_back();
+    package->getLocation()->PopPackage();
     this->loadATM+=package->getWeight();
     this->storageATM+=package->getSize();
 }
 
 void Base::SendTruckToCenter() {
     this->getTruck()[0]->NeedToTankUp(this->getDistanceToBase());
-    for (int i = 0; i < this->getTruck()[0]->getLoadingSpace().size(); ++i) {
-        this->getCenter()->getPackages().push_back(this->getTruck()[0]->getLoadingSpace()[i]);
-    }
-
-    vector <int> toBeCollected;
-    for (int j = 0; j < this->getCenter()->getPackages().size(); ++j) {
-        if(this->getCenter()->getPackages()[j]->getDirection() == this){
-            this->getTruck()[0]->getLoadingSpace().push_back(this->getCenter()->getPackages()[j]);
-            toBeCollected.push_back(j);
-        }
-    }
-    vector<Package*>::iterator it;
-
-    for (int k = toBeCollected.size()-1; k >= 0; --k) {
-        it = this->Center->getPackages().begin();
-        this->getCenter()->getPackages().erase(it + toBeCollected[k]);
-    }
+//    cout << "TIR z bazy " << this->getCity() << " wyruszyl z ladunkiem do glownej bazy." << endl;
 
     while(!this->getTruck()[0]->getLoadingSpace().empty()){
-        this->getPackages().push_back(this->getTruck()[0]->getLoadingSpace().back());
-        this->getTruck()[0]->getLoadingSpace().pop_back();
+        this->getCenter()->AddPackages(this->getTruck()[0]->getLoadingSpace().back());
+        this->getTruck()[0]->PopLoadingSpace();
     }
-    this->getTruck()[0]->setLoadATM(0);
-    this->getTruck()[0]->setStorageATM(0);
 
-    for (int l = this->getPackages().size(); l >=0 ; --l) {
-        this->getPackages()[l]->DeliverPackage();
+    for (int j = 0; j < this->getCenter()->getPackages().size(); ++j) {
+        if(this->getCenter()->getPackages()[j]->getDirection() == this){
+            this->getTruck()[0]->AddLoadingSpace(this->getCenter()->getPackages()[j]);
+            this->getCenter()->erasePackage(j);
+        }
     }
+
+    this->getTruck()[0]->NeedToTankUp(this->getDistanceToBase());
+    cout << "TIR wyruszyl z ladunkiem z bazy glownej do " << this->getCity() << endl;
+
+        while(!this->getTruck()[0]->getLoadingSpace().empty()) {
+            this->AddPackages(this->getTruck()[0]->getLoadingSpace().back());
+            this->getTruck()[0]->PopLoadingSpace();
+            this->getPackages()[this->getPackages().size() - 1]->DeliverPackage(1);
+        }
+        this->getTruck()[0]->setLoadATM(0);
+        this->getTruck()[0]->setStorageATM(0);
+
 }
 
-void TakeCareOfPackage(MainBase* Center, int repeatsDone, int repeats){
+void TakeCareOfPackage(MainBase* Center, int repeatsDone){
     Package* newPackage;
     newPackage = Center->CreateNewPackage(repeatsDone);
     newPackage->CollectPackage(Center);
     newPackage->checkPackageDestination(Center);
     for (int i = 0; i < Center->getSubBases().size(); ++i) {
-        if(Center->getSubBases()[i]->getTruck()[0]->getLoadATM() > 21000 || Center->getSubBases()[i]->getTruck()[0]->getStorageATM()>63
-           || repeatsDone == repeats-1){
+        if(Center->getSubBases()[i]->getTruck()[0]->getLoadATM() > 21000 || Center->getSubBases()[i]->getTruck()[0]->getStorageATM()>63){
             Center->getSubBases()[i]->SendTruckToCenter();
         }
     }
 }
+
+double Car::NeedToTankUp(int dist) {
+    double tempFuel = this->fuelLeft - dist*this->fuelEconomy;
+    if(tempFuel<=0){
+        this->setFuelLeft(this->fuelTankCapacity + tempFuel);
+        cout << "Zatankowano " << this->getType() << " nalezacy do bazy " << this->getOwner()->getCity() << " za kwote " << this->fuelLeft * 5 << " zl" << endl;
+        return (this->fuelLeft * 5);
+
+    }
+    this->setFuelLeft(tempFuel);
+    return 0;
 }

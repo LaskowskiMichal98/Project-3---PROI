@@ -61,7 +61,7 @@ public:
     void setNumOfPackage(int num){
         this->numOfPackage = num;
     }
-    void setDestination(Base* destination){
+    void setDirection(Base* destination){
         this->Direction = destination;
     }
     Client* getReceiver(){
@@ -85,7 +85,7 @@ public:
 
     void CollectPackage(MainBase*);
     void checkPackageDestination(MainBase*);
-    void DeliverPackage();
+    void DeliverPackage(int);
 };
 
 
