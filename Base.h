@@ -22,6 +22,7 @@ private:
     int PackagesCollected;
     int PackagesDelivered;
 public:
+
     MainBase(string name = "Lodz", int startBudget = 0){
         vector<Base*>* tempBases = new vector<Base*>;
         this->SubBases=*tempBases;
@@ -32,6 +33,7 @@ public:
         this->PackagesCollected = 0;
         this->PackagesDelivered = 0;
     }
+
     vector<Base*> getSubBases(){
         return this->SubBases;
     }
@@ -40,6 +42,9 @@ public:
     }
     void SetBudget(double money){
         this->budget += money;
+    }
+    double getBudget(){
+        return this->budget;
     }
     vector<Package*> getPackages(){
         return this -> Packages;

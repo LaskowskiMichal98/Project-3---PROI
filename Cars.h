@@ -36,7 +36,7 @@ public:
                 this->maximumLoad = 2000;
                 this->fuelTankCapacity = 80;
                 this->storage = 5;
-                this->fuelEconomy = 3/25;
+                this->fuelEconomy = 0.12;
                 this->fuelLeft = this->fuelTankCapacity;
         }
         else if(type == "TIR"){
@@ -45,7 +45,7 @@ public:
                 this->maximumLoad = 24000;
                 this->fuelTankCapacity = 1300;
                 this->storage = 70;
-                this->fuelEconomy = 1/2;
+                this->fuelEconomy = 0.5;
                 this->fuelLeft = this->fuelTankCapacity;
                 this->storageATM = 0;
                 this->loadATM = 0;
@@ -55,8 +55,11 @@ public:
     vector<Package*> getLoadingSpace(){
             return this->LoadingSpace;
     }
-    void setFuelLeft(double fuel){
-        this->fuelLeft = fuel;
+    string getType(){
+        return this->Type;
+    }
+    Base* getOwner(){
+        return this->owner;
     }
     void setStorageATM(int temp){
             this->storageATM=temp;
@@ -69,12 +72,6 @@ public:
     }
     int getStorageATM(){
             return this->storageATM;
-    }
-    string getType(){
-            return this->Type;
-    }
-    Base* getOwner(){
-            return this->owner;
     }
     void AddLoadingSpace(Package* package){
         this->LoadingSpace.push_back(package);

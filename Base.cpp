@@ -48,7 +48,7 @@ void MainBase::AddNewBase(string name, int dist) {
 }
 
 void Base::AddClient(string name,int dist){
-    Client* newClient = new Client(name,dist,this);
+    Client* newClient = new Client(name,dist);
     this->Clients.push_back(newClient);
 }
 
@@ -74,8 +74,8 @@ Package* MainBase::CreateNewPackage(int num) {
     newPackage->setReceiver(receiver);
     newPackage->setDirection(this->getSubBases()[branch2]);
 
-//    cout << "Paczka numer " << num << " w kierunku " << this->getSubBases()[branch2]->getClients()[receiverNum]->getClientName() <<
-//    " oczekuje w firmie " << this->getSubBases()[branch1]->getClients()[senderNum]->getClientName() << "." << endl;
+    cout << "Paczka numer " << num << " w kierunku " << this->getSubBases()[branch2]->getClients()[receiverNum]->getClientName() <<
+    " oczekuje w firmie " << this->getSubBases()[branch1]->getClients()[senderNum]->getClientName() << "." << endl;
 
     return newPackage;
 }
@@ -130,10 +130,10 @@ void Package::checkPackageDestination(MainBase* Center){
 
 void Package::DeliverPackage(int temp) {
     for (int i = 0; i < 2; ++i) {
-        this->Location->getBus()[0]->NeedToTankUp(this->getReceiver()->getDistance());
+        this->Location->getCenter()->SetBudget(this->Location->getBus()[0]->NeedToTankUp(this->getReceiver()->getDistance()));
     }
     this->Location->ClearPackages();
-    //cout << "Paczka numer " << this->getNumOfPackage() << " zostala dostarczona do firmy " << this->receiver->getClientName() << endl;
+    cout << "Paczka numer " << this->getNumOfPackage() << " zostala dostarczona do firmy " << this->receiver->getClientName() << endl;
     this->getLocation()->getCenter()->AddPackagesDelivered();
 
 }
@@ -146,8 +146,8 @@ void Car::placePackageInTruck(Package* package) {
 }
 
 void Base::SendTruckToCenter() {
-    this->getTruck()[0]->NeedToTankUp(this->getDistanceToBase());
-//    cout << "TIR z bazy " << this->getCity() << " wyruszyl z ladunkiem do glownej bazy." << endl;
+    this->getCenter()->SetBudget(this->getTruck()[0]->NeedToTankUp(this->getDistanceToBase()));
+    cout << "TIR z bazy " << this->getCity() << " wyruszyl z ladunkiem do glownej bazy." << endl;
 
     while(!this->getTruck()[0]->getLoadingSpace().empty()){
         this->getCenter()->AddPackages(this->getTruck()[0]->getLoadingSpace().back());
@@ -161,7 +161,7 @@ void Base::SendTruckToCenter() {
         }
     }
 
-    this->getTruck()[0]->NeedToTankUp(this->getDistanceToBase());
+    (this->getCenter()->SetBudget(this->getTruck()[0]->NeedToTankUp(this->getDistanceToBase())));
     cout << "TIR wyruszyl z ladunkiem z bazy glownej do " << this->getCity() << endl;
 
         while(!this->getTruck()[0]->getLoadingSpace().empty()) {
@@ -187,13 +187,15 @@ void TakeCareOfPackage(MainBase* Center, int repeatsDone){
 }
 
 double Car::NeedToTankUp(int dist) {
-    double tempFuel = this->fuelLeft - dist*this->fuelEconomy;
+    double tempFuel = this->fuelLeft;
+    tempFuel -= dist*this->fuelEconomy;
     if(tempFuel<=0){
-        this->setFuelLeft(this->fuelTankCapacity + tempFuel);
-        cout << "Zatankowano " << this->getType() << " nalezacy do bazy " << this->getOwner()->getCity() << " za kwote " << this->fuelLeft * 5 << " zl" << endl;
-        return (this->fuelLeft * 5);
-
+        this->fuelLeft = (this->fuelTankCapacity + tempFuel);
+        cout << "Zatankowano " << this->getType() << " nalezacy do bazy " << this->getOwner()->getCity() << " za kwote " << this->fuelTankCapacity * 5 << " zl" << endl;
+        return -(this->fuelTankCapacity * 5);
     }
-    this->setFuelLeft(tempFuel);
-    return 0;
+    else {
+        this->fuelLeft = tempFuel;
+        return 0;
+    }
 }

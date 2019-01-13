@@ -15,12 +15,10 @@ class Client{
 private:
     string clientName;
     int distance;
-    Base* contractor;
 public:
-    Client(string name,int dist,Base* base){
+    Client(string name,int dist){
         this->clientName=name;
         this->distance=dist;
-        this->contractor=base;
     }
 
     string getClientName(){
@@ -47,10 +45,13 @@ public:
         this->numOfPackage = num;
         size = randomNumber(1, 10);
         this->weight = this->size * 500;
-        this->price=this->size*10;
+        this->price=this->size*35;
     }
     void setSender(Client* sender){
         this->sender=sender;
+    }
+    int getNumOfPackage(){
+        return this->numOfPackage;
     }
     void setReceiver(Client* receiver){
         this->receiver=receiver;
@@ -58,17 +59,11 @@ public:
     void setLocation(Base* location){
         this->Location=location;
     }
-    void setNumOfPackage(int num){
-        this->numOfPackage = num;
-    }
     void setDirection(Base* destination){
         this->Direction = destination;
     }
     Client* getReceiver(){
         return this->receiver;
-    }
-    int getNumOfPackage(){
-        return this->numOfPackage;
     }
     Base* getLocation(){
         return this->Location;

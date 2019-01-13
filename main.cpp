@@ -28,4 +28,5 @@ int main() {
     }
     cout << "Paczki odebrane: " << Center->getPackagesCollected() << endl;
     cout << "Paczki dostarczone: " << Center->getPackagesDelivered() << endl;
+    cout << "Budzet: " << Center->getBudget();
 }
