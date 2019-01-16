@@ -80,7 +80,7 @@ public:
         this->LoadingSpace.pop_back();
     }
 
-    double NeedToTankUp(int);
+    double NeedToTankUp(int,fstream*);
     void placePackageInTruck(Package*);
 };
 

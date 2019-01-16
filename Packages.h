@@ -4,8 +4,9 @@
 
 #ifndef DELIVERY_COMPANY_PACKAGES_H
 #define DELIVERY_COMPANY_PACKAGES_H
-using namespace std;
+
 #include <string>
+using namespace std;
 
 int randomNumber(int, int);
 class Base;
@@ -78,9 +79,9 @@ public:
         return this->weight;
     }
 
-    void CollectPackage(MainBase*);
-    void checkPackageDestination(MainBase*);
-    void DeliverPackage(int);
+    void CollectPackage(MainBase*,fstream*);
+    void checkPackageDestination(MainBase*,fstream*);
+    void DeliverPackage(fstream*);
 };
 
 

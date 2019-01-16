@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <fstream>
 #include "Cars.h"
 #include "Packages.h"
 using namespace std;
@@ -74,7 +75,7 @@ public:
         return this->PackagesCollected;
     }
     void AddNewBase(string,int);
-    Package* CreateNewPackage(int);
+    Package* CreateNewPackage(int,fstream*);
 };
 
 
@@ -118,11 +119,15 @@ public:
     void AddClient(string,int);
     void AddNewBus();
     void AddNewTruck();
-    void SendTruckToCenter();
+    void SendTruckToCenter(fstream*);
 };
 
 MainBase* CreateChain();
-void TakeCareOfPackage(MainBase*,int);
-
+void TakeCareOfPackage(MainBase*,int,fstream*);
+int menu(MainBase*,fstream*,fstream*);
+void AddNewBaseManually(MainBase*,fstream*,fstream*);
+void AddNewClient(MainBase*,fstream*,fstream*);
+void Simulate(MainBase*,fstream*,fstream*);
+bool checkClients(MainBase*);
 
 #endif //DELIVERY_COMPANY_BASE_H
