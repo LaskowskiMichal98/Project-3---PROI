@@ -7,12 +7,12 @@
 #include <vector>
 #include <iostream>
 #include <fstream>
-#include "Cars.h"
-#include "Packages.h"
 using namespace std;
 
 class Base;
 class Car;
+class Package;
+class Client;
 
 class MainBase {
 private:
@@ -121,13 +121,5 @@ public:
     void AddNewTruck();
     void SendTruckToCenter(fstream*);
 };
-
-MainBase* CreateChain();
-void TakeCareOfPackage(MainBase*,int,fstream*);
-int menu(MainBase*,fstream*,fstream*);
-void AddNewBaseManually(MainBase*,fstream*,fstream*);
-void AddNewClient(MainBase*,fstream*,fstream*);
-void Simulate(MainBase*,fstream*,fstream*);
-bool checkClients(MainBase*);
 
 #endif //DELIVERY_COMPANY_BASE_H

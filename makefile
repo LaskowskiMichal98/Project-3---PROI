@@ -2,9 +2,9 @@ CC = g++
 
 CFLAGS = 
 
-LIBS = Base.h Cars.h Packages.h
+LIBS = Base.h Cars.h Packages.h Functions.h
 
-OBJECTS = Base.o Cars.o Packages.o main.o
+OBJECTS = Base.o Cars.o Packages.o Functions.o main.o
 
 
 OUTPUT = TEST

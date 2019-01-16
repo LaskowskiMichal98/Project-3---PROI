@@ -1,10 +1,9 @@
 #include <iostream>
 #include <fstream>
-#include "Base.h"
+#include "Functions.h"
 using namespace std;
 
 int main() {
-
     fstream processFile;
     fstream reportFile;
     processFile.open("process.txt",ios::out);
@@ -22,7 +21,10 @@ int main() {
             cout << s;
             string temp;
             cout << endl << "Wcisnij enter aby kontynuowac";
+            cin.sync();
             getline(cin, temp);
         }
     }
+    processFile.close();
+    reportFile.close();
 }

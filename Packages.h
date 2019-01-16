@@ -5,12 +5,17 @@
 #ifndef DELIVERY_COMPANY_PACKAGES_H
 #define DELIVERY_COMPANY_PACKAGES_H
 
+#include <stdlib.h>
+#include <time.h>
 #include <string>
+#include <iostream>
+
 using namespace std;
 
-int randomNumber(int, int);
 class Base;
 class MainBase;
+
+int randomNumber(int,int);
 
 class Client{
 private:
@@ -21,14 +26,12 @@ public:
         this->clientName=name;
         this->distance=dist;
     }
-
     string getClientName(){
         return this->clientName;
     }
     int getDistance(){
         return this->distance;
     }
-
 };
 
 class Package {
@@ -83,8 +86,5 @@ public:
     void checkPackageDestination(MainBase*,fstream*);
     void DeliverPackage(fstream*);
 };
-
-
-
 
 #endif //DELIVERY_COMPANY_PACKAGES_H
